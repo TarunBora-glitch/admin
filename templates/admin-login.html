@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='register_admin.css') }}">
+</head>
+<body>
+
+    <div class="container">
+        <h2>Admin Login</h2>
+        <form id="adminLoginForm" method="post">
+            <input type="email" name="email" id="adminEmail" placeholder="Email" required>
+            <input type="password" name="password" id="adminPassword" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+        <p>Forgot your password? 
+            <a href="/forgot-password-admin" style="text-decoration: none; color: #0d47a1; font-weight: 600;">Reset Password</a>
+        </p>
+        <p>Not registered? 
+            <a href="/register-admin" style="text-decoration: none; color: #0d47a1; font-weight: 600;">Register</a>
+        </p>
+
+
+    </div>
+
+    <script defer src="{{ url_for('static', filename='admin.js') }}"></script>
+</body>
+</html>

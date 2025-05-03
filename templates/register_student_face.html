@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student face Registration</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='register_student_face.css') }}">
+  <script defer src="{{ url_for('static', filename='register_student_face.js') }}"></script>
+
+</head>
+<body>
+  <div class="form-container">
+    <h2>Student Login for Face Registration</h2>
+    <form id="studentForm">
+      <label for="fullname">Full Name:</label>
+      <input type="text" id="fullname" name="fullname" required />
+
+      <label for="rollno">Roll Number:</label>
+      <input type="text" id="rollno" name="rollno" required />
+    </form>
+
+    <div class="video-container">
+      <video id="video" autoplay></video>
+    </div>
+
+    <div class="buttons">
+      <button id="startCamera">Start Camera</button>
+      <button id="stopCamera" disabled>Stop Camera</button>
+      <button id="registerFace" disabled>Register Face</button>
+    </div>
+
+    <p id="status">Status: Waiting...</p>
+    <p class="note">Note: Please ensure all fields are filled before registering face.</p>
+  </div>
+</body>
+</html>

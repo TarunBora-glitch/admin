@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Registration</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='register_students.css') }}">
+</head>
+<body>
+
+  <div class="container">
+    <h2>Student Registration</h2>
+    <form id="studentRegisterForm" action="/register-student" method="post">
+      <input type="text" name="full_name" id="studentName" placeholder="Full Name" required>
+      <input type="text" name="roll_number" id="studentRoll" placeholder="Roll Number" required>
+
+    <!-- Branch Dropdown -->
+    <select name="branch" id="studentBranch" required>
+        <option value="" disabled selected>Select Branch</option>
+        {% for branch in branches %}
+        <option value="{{ branch }}">{{ branch }}</option>
+        {% endfor %}
+    </select>
+    
+    <input type="password" name="password" id="studentPassword" placeholder="Password" required>
+
+    <!-- Semester Dropdown -->
+    <select name="semester" id="studentSemester" required>
+        <option value="" disabled selected>Select Semester</option>
+        {% for sem in semesters %}
+        <option value="{{ sem }}">{{ sem }}</option>
+        {% endfor %}
+    </select>
+
+      <!-- Gender Selection -->
+      <div class="field-group">
+        <label>Gender:</label>
+        <div class="radio-group">
+          <input type="radio" id="male" name="gender" value="Male" required>
+          <label for="male">Male</label>
+          <input type="radio" id="female" name="gender" value="Female">
+          <label for="female">Female</label>
+          <input type="radio" id="other" name="gender" value="Other">
+          <label for="other">Other</label>
+        </div>
+      </div>
+
+      <button type="submit">Register</button>
+    </form>
+    <p>Already registered? <a href="/student-login" class="login-btn">Login</a></p>
+  </div>
+
+  <script defer src="{{ url_for('static', filename='student_register.js') }}"></script>
+
+</body>
+</html>

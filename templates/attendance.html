@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mark Attendance</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='attendance.css') }}">
+
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/attendance">Mark Attendance</a></li>
+        </ul>
+    </nav>
+
+        <div class="video-container">
+            <video id="video" autoplay></video>
+        </div>
+
+        <div class="buttons">
+            <button id="startCamera">Start Camera</button>
+            <button id="stopCamera" disabled>Stop Camera</button>
+            <div class="subject-select">
+                <label for="subjectSelect">Select Subject:</label>
+                <select id="subjectSelect" required>
+                    <option value="">-- Select a subject --</option>
+                </select>
+            </div>
+            
+            <button id="markAttendance" disabled>Mark Attendance</button>
+        </div>
+
+        <p id="status">Status: ...</p>
+
+        <div class="redirect-container">
+            <button id="goToDashboard">Go to Dashboard  →</button>
+        </div>
+
+    <script defer src="{{ url_for('static', filename='attendance.js') }}"></script>
+    
+</body>
+</html>

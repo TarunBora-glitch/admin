@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='student_dashboard.css') }}">
+</head>
+<body>
+    
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/attendance">Mark Attendance</a></li>
+            <li><a href="">Student Dashboard</a></li>
+        </ul>
+    </nav>
+
+    <div class="dashboard-container">
+        <h2>Student Dashboard</h2>
+        {% if student %}
+            <h3>Welcome, {{ student.full_name }}</h3>
+            <div class="student-box">
+                <h3>Your Details</h3>
+                <p><strong>Full Name:</strong> {{ student.full_name }}</p>
+                <p><strong>Roll Number:</strong> {{ student.roll_number }}</p>
+                <p><strong>Branch:</strong> {{ student.branch }}</p>
+                <p><strong>Semester:</strong> {{ student.semester }}</p>
+                <p><strong>Gender:</strong> {{ student.gender }}</p>
+            </div>
+        {% else %}
+            <p style="color: red;">Error: Student details not found.</p>
+        {% endif %}
+    </div>
+
+    <div class="redirect-container">
+        <button id="goToAttendance">← Go to Attendance Page</button>
+    </div>
+
+    <div class="container">
+        <h2>Student Attendance Report</h2>
+        
+        <!-- Search Attendance by Date -->
+        <form action="/search_attendance" method="POST">
+            <input type="date" name="search_date">
+            
+            <select name="status">
+                <option value="">All Status</option>
+                <option value="Present">Present</option>
+                <option value="Absent">Absent</option>
+            </select>
+            
+            <select name="subject_id">
+                <option value="">All Subjects</option>
+                {% for subject in subjects %}
+                    <option value="{{ subject.id }}">{{ subject.subject_name }}</option>
+                {% endfor %}
+            </select>
+            
+            <button type="submit">Search</button>
+        </form>
+        
+
+        <!-- Attendance Table -->
+        <table>
+            <thead>
+                <tr>
+                    <th>S.No</th>
+                    <th>Subject</th>
+                    <th>Captured Face</th>
+                    <th>Status</th>
+                    <th>Date & Time</th>
+                </tr>
+            </thead>
+            <tbody class="attendanceTable">
+                {% for record in records %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ record.subject_name }}</td>
+                    <td>{{ "Yes" if record.face_matched else "No/Manual Attendance" }}</td>
+                    <td>{{ record.status }}</td>
+                    <td>{{ record.time }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" style="text-align: center; font-style: italic; color: #555;">No attendance records found..</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Student Download Report -->
+        <a href="{{ url_for('download_report') }}" class="download-btn"><button type="button">Download Attendance Report</button></a>
+
+        <!-- Student Logout -->
+        <a href="{{ url_for('admin_logout') }}" class="logout-btn"><button>Logout</button></a>
+    </div>
+
+<script>
+    const goToDashboard = document.getElementById('goToAttendance');
+
+    goToDashboard.addEventListener('click', () => {
+        window.location.href = '/attendance';
+    });
+</script>
+
+</body>
+</html>
