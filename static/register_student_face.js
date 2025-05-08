@@ -62,7 +62,7 @@ try {
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
     const imageData = canvas.toDataURL('image/jpeg');
-    console.log("Captured image data:", imageData);  // Debugging the captured image data
+    console.log("Captured image data:", imageData);  
 
     const response = await fetch('/register_face', {
         method: 'POST',

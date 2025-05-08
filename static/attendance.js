@@ -4,7 +4,7 @@ const stopCamera = document.getElementById('stopCamera');
 const markAttendance = document.getElementById('markAttendance');
 const statusText = document.getElementById('status');
 const goToDashboard = document.getElementById('goToDashboard');
-const subjectSelect = document.getElementById('subjectSelect');
+// const subjectSelect = document.getElementById('subjectSelect');
 
 let stream;
 
@@ -35,37 +35,22 @@ stopCamera.addEventListener('click', () => {
 
 // Redirect to dashboard
 goToDashboard.addEventListener('click', () => {
-    window.location.href = '/student_dashboard'; // Update if your dashboard URL is different
+    window.location.href = '/student_dashboard'; 
 });
 
-// Populate the subject dropdown
-window.addEventListener('DOMContentLoaded', async () => {
-    try {
-        const response = await fetch('/get_subjects');
-        const subjects = await response.json();
-
-        if (Array.isArray(subjects)) {
-            subjectSelect.innerHTML = '<option value="">-- Select a subject --</option>';
-            subjects.forEach(subject => {
-                const option = document.createElement('option');
-                option.value = subject.id;
-                option.textContent = subject.name;
-                subjectSelect.appendChild(option);
-            });
-        } else {
-            alert('Error loading subjects: ' + (subjects.error || 'Unknown error'));
-        }
-    } catch (error) {
-        alert('Error loading subjects: ' + error.message);
-    }
-});
 
 // Mark attendance
 markAttendance.addEventListener('click', async () => {
-    const subjectId = subjectSelect.value;
+    // Collect form values
+    const fullName = document.getElementById('fullName').value;
+    const rollNumber = document.getElementById('rollNumber').value;
+    const branch = document.getElementById('branchSelect').value;
+    const semester = document.getElementById('semesterSelect').value;
+    const subject = document.getElementById('subjectSelect').value;
 
-    if (!subjectId || subjectId === "0") {
-        statusText.innerText = "Status: Please select a valid subject.";
+    // Check if all fields are filled
+    if (!fullName || !rollNumber || !branch || !semester || !subject) {
+        statusText.innerText = "Status: All fields are required.";
         return;
     }
 
@@ -85,7 +70,14 @@ markAttendance.addEventListener('click', async () => {
         const response = await fetch('/mark_attendance', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ image: imageData, subject_id: subjectId })
+            body: JSON.stringify({
+                full_name: fullName,
+                roll_number: rollNumber,
+                branch: branch,
+                semester: semester,
+                subject_name: subject,
+                image: imageData
+            })
         });
 
         const result = await response.json();
@@ -112,5 +104,63 @@ markAttendance.addEventListener('click', async () => {
     // Reset status
     setTimeout(() => {
         statusText.innerText = 'Status:';
-    }, 3000);
+    }, 2000);
 });
+document.getElementById('rollNumber').addEventListener('blur', fetchStudentDetails);
+document.getElementById('fullName').addEventListener('blur', fetchStudentDetails);
+async function fetchStudentDetails() {
+    const fullName = document.getElementById('fullName').value.trim();
+    const rollNumber = document.getElementById('rollNumber').value.trim();
+    const branchSelect = document.getElementById('branchSelect');
+    const semesterSelect = document.getElementById('semesterSelect');
+    const subjectSelect = document.getElementById('subjectSelect');
+
+    if (!fullName || !rollNumber) return;
+
+    try {
+        const response = await fetch('/api/student_info', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ full_name: fullName, roll_number: rollNumber })
+        });
+
+        const data = await response.json();
+
+        if (!data.found) {
+            // Show "Student not found" in all dropdowns
+            branchSelect.innerHTML = '<option value="">Student not found</option>';
+            semesterSelect.innerHTML = '<option value="">Student not found</option>';
+            subjectSelect.innerHTML = '<option value="">Student not found</option>';
+            return;
+        }
+
+        // Populate Branch with a default option + actual value
+        branchSelect.innerHTML = '<option value="">-- Select Branch --</option>';
+        const branchOption = document.createElement('option');
+        branchOption.value = data.branch;
+        branchOption.textContent = data.branch;
+        branchSelect.appendChild(branchOption);
+
+        // Populate Semester with a default option + actual value
+        semesterSelect.innerHTML = '<option value="">-- Select Semester --</option>';
+        const semOption = document.createElement('option');
+        semOption.value = data.semester;
+        semOption.textContent = data.semester;
+        semesterSelect.appendChild(semOption);
+
+        // Populate Subjects
+        subjectSelect.innerHTML = '<option value="">-- Select Subject --</option>';
+        data.subjects.forEach(subject => {
+            const option = document.createElement('option');
+            option.value = subject;
+            option.textContent = subject;
+            subjectSelect.appendChild(option);
+        });
+
+    } catch (error) {
+        console.error("Error fetching student info:", error);
+        branchSelect.innerHTML = '<option value="">Error fetching data</option>';
+        semesterSelect.innerHTML = '<option value="">Error fetching data</option>';
+        subjectSelect.innerHTML = '<option value="">Error fetching data</option>';
+    }
+}

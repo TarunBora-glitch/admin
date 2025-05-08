@@ -11,7 +11,6 @@
     <nav>
         <ul>
             <li><a href="/">Home</a></li>
-            <li><a href="/attendance">Mark Attendance</a></li>
             <li><a href="">Student Dashboard</a></li>
         </ul>
     </nav>
@@ -33,14 +32,9 @@
         {% endif %}
     </div>
 
-    <div class="redirect-container">
-        <button id="goToAttendance">← Go to Attendance Page</button>
-    </div>
-
     <div class="container">
         <h2>Student Attendance Report</h2>
         
-        <!-- Search Attendance by Date -->
         <form action="/search_attendance" method="POST">
             <input type="date" name="search_date">
             
@@ -60,49 +54,45 @@
             <button type="submit">Search</button>
         </form>
         
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Subject</th>
+                        <th>Captured Face</th>
+                        <th>Status</th>
+                        <th>Date & Time</th>
+                    </tr>
+                </thead>
+                <tbody class="attendanceTable">
+                    {% for record in records %}
+                    <tr>
+                        <td data-label="S.No">{{ loop.index }}</td>
+                        <td data-label="Subject">{{ record.subject_name }}</td>
+                        <td data-label="Captured Face">{{ "Yes" if record.face_matched else "No/Manual Attendance" }}</td>
+                        <td data-label="Status">{{ record.status }}</td>
+                        <td data-label="Date & Time">{{ record.time }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" style="text-align: center; font-style: italic; color: #555;">No attendance records found..</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
 
-        <!-- Attendance Table -->
-        <table>
-            <thead>
-                <tr>
-                    <th>S.No</th>
-                    <th>Subject</th>
-                    <th>Captured Face</th>
-                    <th>Status</th>
-                    <th>Date & Time</th>
-                </tr>
-            </thead>
-            <tbody class="attendanceTable">
-                {% for record in records %}
-                <tr>
-                    <td>{{ loop.index }}</td>
-                    <td>{{ record.subject_name }}</td>
-                    <td>{{ "Yes" if record.face_matched else "No/Manual Attendance" }}</td>
-                    <td>{{ record.status }}</td>
-                    <td>{{ record.time }}</td>
-                </tr>
-                {% else %}
-                <tr>
-                    <td colspan="5" style="text-align: center; font-style: italic; color: #555;">No attendance records found..</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        <!-- Student Download Report -->
-        <a href="{{ url_for('download_report') }}" class="download-btn"><button type="button">Download Attendance Report</button></a>
-
-        <!-- Student Logout -->
-        <a href="{{ url_for('admin_logout') }}" class="logout-btn"><button>Logout</button></a>
+        <div class="button-group">
+            <a href="{{ url_for('download_report') }}" class="download-btn">
+                <button type="button">Download Attendance Report</button>
+            </a>
+            <a href="{{ url_for('admin_logout') }}" class="logout-btn">
+                <button>Logout</button>
+            </a>
+        </div>
+        
     </div>
-
-<script>
-    const goToDashboard = document.getElementById('goToAttendance');
-
-    goToDashboard.addEventListener('click', () => {
-        window.location.href = '/attendance';
-    });
-</script>
 
 </body>
 </html>

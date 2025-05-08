@@ -9,11 +9,11 @@ document.getElementById("studentRegisterForm").addEventListener("submit", functi
   })
   .then(response => response.text())
   .then(data => {
-      if (data.includes("Invalid Credentials")) {  // ✅ If login fails, show error
+      if (data.includes("Invalid Credentials")) {  
           alert("Invalid register. Try again!");
       } else {
         alert("Registration Successfull!");
-          window.location.href = "/";  // ✅ Redirect correctly
+          window.location.href = "/student-login"; 
       }
   })
   .catch(error => console.error("Error:", error));

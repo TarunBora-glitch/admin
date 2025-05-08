@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel - Attendance</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='admin_panel.css') }}">
-    <script defer src="{{ url_for('static', filename='admin.js') }}"></script>
+    <link rel="stylesheet" href="/static/admin_panel.css?v=2">
+
+    
 </head>
 <body>
 
@@ -28,6 +29,11 @@
             <a href="{{ url_for('register_student_face') }}"><button>Register Student Face</button></a>
         </div>
 
+        <div class="button-container-two">
+            <a href="{{ url_for('mark_student_attendance') }}"><button>Mark Student Attendance</button></a>
+        </div>
+
+
         <hr>
         <h2>Manually Add Attendance</h2>
         <p class="note">Note: Please ensure all fields are filled correctly.</p>
@@ -37,7 +43,6 @@
         
             <select id="subject_select" name="subject_name" required>
                 <option value="">Select Subject</option>
-                <!-- Dynamic subject options will be inserted here -->
             </select>
         
             <input type="date" name="date" max="{{ today_date }}" required>
@@ -51,20 +56,22 @@
         </form>
         
         
-        {% if message %}
-        <div id="popupMessage" class="temp-message">{{ message }}</div>
-        {% endif %}      
-        {% if no_results %}
-            <div id="noRecordsMessage"class="alert-message">No Student records found in database.</div>
-        {% endif %}
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="temp-message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
       
-        <h1>Attendance Records</h1> 
+      
+
+      
+        <h1>Attendance Records</h1>
         <div class="filters">
             <input type="text" id="searchName" placeholder="Search by Name..." value="{{ search_name }}">
             <input type="text" id="searchRollNumber" placeholder="Student Roll Number" value="{{ search_roll_number }}">
-            <select id="subjectSelect">
-                <option value="">Select Subject</option>
-            </select>
+            <input type="text" id="searchSubject" placeholder="Subject Name" value="{{ search_subject_name }}">
             <input type="date" id="searchDate" value="{{ search_date }}">
             <select id="statusFilter">
                 <option value="">All Status</option>
@@ -75,9 +82,9 @@
             <button type="button" id="resetFilters">Reset</button>
             <button id="exportCSV" onclick="exportFilteredCSV()">Export CSV</button>
         </div>
-        {% if no_results %}
-            <div id="noRecordsMessage"class="alert-message">No Student records found in database.</div>
-        {% endif %}
+        <!-- {% if no_results %}
+            <div id="noRecordsMessage"class="alert-message">No records found in database.</div>
+        {% endif %} -->
         <table>
             <thead>
                 <tr>
@@ -98,7 +105,7 @@
                         <tr>
                             <td>{{ loop.index }}</td>
                             <td>{{ record.date }}</td>
-                            <td>{{ record.student_name }}</td>
+                            <td data-label="Student Name">{{ record.student_name }}</td>
                             <td>{{ record.roll_number }}</td>
                             <td>{{ record.branch }}</td>
                             <td>{{ record.subject_name }}</td>
@@ -126,19 +133,17 @@
 
         <script>
             document.getElementById("resetFilters").addEventListener("click", function () {
-                // Clear all input values
                 document.getElementById("searchName").value = "";
                 document.getElementById("searchRollNumber").value = "";
                 document.getElementById("searchSubject").value = "";
                 document.getElementById("searchDate").value = "";
                 document.getElementById("statusFilter").value = "";
 
-                // Reload the page without query parameters (i.e., reset filters)
                 window.location.href = window.location.pathname;
             });
         </script>
 
-<!-- 
+
     <script>
     
         function applyFilters() {
@@ -152,7 +157,7 @@
     
             window.location.href = '/admin?' + params.toString();
         }
-    </script> -->
+    </script>
     <script>
         document.getElementById('roll_number').addEventListener('blur', function() {
             const studentName = document.getElementById('student_name').value.trim();
@@ -175,14 +180,12 @@
                     subjectSelect.innerHTML = '<option value="">Select Subject</option>'; // Reset
     
                     if (data.error) {
-                        // Display the error message returned from the server
                         const errorMessage = data.error;
                         const option = document.createElement('option');
                         option.value = '';
                         option.textContent = errorMessage;
                         subjectSelect.appendChild(option);
                     } else {
-                        // Populate the subject dropdown with subjects
                         if (data.subjects && data.subjects.length > 0) {
                             data.subjects.forEach(subject => {
                                 const option = document.createElement('option');
@@ -204,60 +207,32 @@
             }
         });
     </script>
-    <script>
-        document.getElementById('searchRollNumber').addEventListener('blur', function() {
-            const studentName = document.getElementById('searchName').value.trim();
-            const rollNumber = document.getElementById('searchRollNumber').value.trim();
-    
-            if (studentName && rollNumber) {
-                fetch('/fetch_subjects_by_roll_for_attendance_records', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: new URLSearchParams({
-                        'student_name': studentName,
-                        'roll_number': rollNumber
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    const subjectSelect = document.getElementById('subjectSelect');
-                    subjectSelect.innerHTML = '<option value="">Select Subject</option>'; // Reset
-    
-                    if (data.error) {
-                        const option = document.createElement('option');
-                        option.value = '';
-                        option.textContent = data.error;
-                        subjectSelect.appendChild(option);
-                    } else {
-                        data.subjects.forEach(subject => {
-                            const option = document.createElement('option');
-                            option.value = subject;
-                            option.textContent = subject;
-                            subjectSelect.appendChild(option);
-                        });
-                    }
-                })
-                .catch(err => {
-                    console.error('Error fetching subjects:', err);
-                });
-            }
-        });
-    
-        function applyFilters() {
-            const params = new URLSearchParams({
-                search_name: document.getElementById('searchName').value,
-                search_roll_number: document.getElementById('searchRollNumber').value,
-                search_subject_name: document.getElementById('subjectSelect').value,
-                search_date: document.getElementById('searchDate').value,
-                status_filter: document.getElementById('statusFilter').value
-            });
-    
-            window.location.href = '/admin?' + params.toString();
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        const noRecords = document.getElementById('noRecordsMessage');
+        const popup = document.getElementById('popupMessage');
+
+        if (noRecords && !sessionStorage.getItem('noRecordsShown')) {
+            setTimeout(() => {
+                noRecords.style.display = 'none';
+            }, 2500);
+            sessionStorage.setItem('noRecordsShown', 'true');
+        } else if (noRecords) {
+            noRecords.style.display = 'none';
         }
-    </script>
-    
-    
+
+        if (popup && !sessionStorage.getItem('popupShown')) {
+            setTimeout(() => {
+                popup.style.display = 'none';
+            }, 2500);
+            sessionStorage.setItem('popupShown', 'true');
+        } else if (popup) {
+            popup.style.display = 'none';
+        }
+    });
+</script>
+
 </body>
+<script src="/static/admin.js?v=2"></script>
+
 </html>

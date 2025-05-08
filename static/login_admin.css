@@ -1,0 +1,102 @@
+:root {
+  --primary-color: #0d47a1;
+  --secondary-color: #000000;
+  --text-color: #333;
+  --background-color: #ffffff;
+  --border-radius: 8px;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --transition-speed: 0.3s;
+  --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  padding: 1rem;
+}
+
+.container {
+  background-color: var(--background-color);
+  padding: 2.5rem;
+  max-width: 400px;
+  width: 100%;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+.container h2 {
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+  color: var(--primary-color);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+input[type="email"],
+input[type="password"] {
+  padding: 0.8rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  transition: border var(--transition-speed);
+  outline: none;
+}
+
+
+button[type="submit"] {
+  padding: 0.8rem;
+  font-size: 1rem;
+  background-color: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background-color var(--transition-speed);
+}
+
+button:hover {
+  background-color: #0b3c91;
+}
+
+.container p {
+  margin: 0.5rem 0;
+  font-size: 0.95rem;
+}
+
+.container a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color var(--transition-speed);
+}
+
+.container a:hover {
+  color: #08307a;
+}
+
+@media (max-width: 500px) {
+  .container {
+      padding: 2rem 1.2rem;
+  }
+
+  input,
+  button {
+      font-size: 0.95rem;
+  }
+}

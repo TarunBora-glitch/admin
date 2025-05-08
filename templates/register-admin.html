@@ -32,11 +32,11 @@
             })
             .then(response => response.text())
             .then(data => {
-                if (data.includes("Invalid Credentials")) {  // ✅ If login fails, show error
+                if (data.includes("Invalid Credentials")) { 
                     alert("Invalid registration. Try again!");
                 } else {
                     alert("registration successsfull");
-                    window.location.href = "/admin-login";  // ✅ Redirect correctly
+                    window.location.href = "/admin-login";  
                 }
             })
             .catch(error => console.error("Error:", error));

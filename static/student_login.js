@@ -9,11 +9,11 @@ document.getElementById("studentLoginForm").addEventListener("submit", function 
     })
     .then(response => response.text())
     .then(data => {
-        if (data.includes("Invalid Credentials") || data.includes("User not found")) {  // ✅ If login fails, show error
+        if (data.includes("Invalid Credentials") || data.includes("User not found")) {  
             alert("Invalid login. Try again!");
         } else {
             alert("Login successful");
-            window.location.href = "/attendance";  // ✅ Redirect correctly
+            window.location.href = "/student_dashboard";  
         }
     })
     .catch(error => console.error("Error:", error));

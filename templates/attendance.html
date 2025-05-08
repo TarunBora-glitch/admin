@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mark Attendance</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='attendance.css') }}">
+    <link rel="stylesheet" href="/static/attendance.css?v=2">
 
 </head>
 <body>
@@ -15,30 +15,51 @@
         </ul>
     </nav>
 
-        <div class="video-container">
-            <video id="video" autoplay></video>
+    <!-- Form for user info -->
+    <form id="userInfoForm" class="user-info-form">
+        <label for="fullName">Full Name:</label>
+        <input type="text" id="fullName" name="fullName" required>
+
+        <label for="rollNumber">Roll Number:</label>
+        <input type="text" id="rollNumber" name="rollNumber" required>
+
+        <label for="branchSelect">Branch:</label>
+        <select id="branchSelect" name="branch" required>
+            <option value="">-- Select Branch --</option>
+        </select>
+
+        <label for="semesterSelect">Semester:</label>
+        <select id="semesterSelect" name="semester" required>
+            <option value="">-- Select Semester --</option>
+        </select>
+
+        <label for="subjectSelect">Subject:</label>
+        <select id="subjectSelect" name="subject" required>
+            <option value="">-- Select Subject --</option>
+        </select>
+    </form>
+
+    <!-- Video area -->
+    <div class="video-container">
+        <div class="video-box">
+            <video id="video" autoplay muted></video>
         </div>
+    </div>
 
-        <div class="buttons">
-            <button id="startCamera">Start Camera</button>
-            <button id="stopCamera" disabled>Stop Camera</button>
-            <div class="subject-select">
-                <label for="subjectSelect">Select Subject:</label>
-                <select id="subjectSelect" required>
-                    <option value="">-- Select a subject --</option>
-                </select>
-            </div>
-            
-            <button id="markAttendance" disabled>Mark Attendance</button>
-        </div>
+    <!-- Buttons -->
+    <div class="buttons">
+        <button id="startCamera">Start Camera</button>
+        <button id="stopCamera" disabled>Stop Camera</button>
+        <button id="markAttendance" disabled>Mark Attendance</button>
+    </div>
 
-        <p id="status">Status: ...</p>
+    <p id="status">Status: ...</p>
 
-        <div class="redirect-container">
-            <button id="goToDashboard">Go to Dashboard  →</button>
-        </div>
+    <!-- <div class="redirect-container">
+        <button id="goToDashboard">Go to Dashboard →</button>
+    </div> -->
 
-    <script defer src="{{ url_for('static', filename='attendance.js') }}"></script>
-    
+    <script defer src="/static/attendance.js?v=2"></script>
 </body>
+
 </html>

@@ -23,42 +23,22 @@ document.getElementById("adminLoginForm").addEventListener("submit", function (e
 
 
 function exportFilteredCSV() {
-    const fullName = document.getElementById('full_name')?.value || '';
-    const rollNumber = document.getElementById('roll_number')?.value || '';
-    const subjectName = document.getElementById('subject_name')?.value || '';
-    const date = document.getElementById('date')?.value || '';
-    const status = document.getElementById('status')?.value || '';
+    const name = document.getElementById('searchName').value;
+    const roll = document.getElementById('searchRollNumber').value;
+    const subject = document.getElementById('searchSubject').value;
+    const date = document.getElementById('searchDate').value;
+    const status = document.getElementById('statusFilter').value;
 
-    const queryParams = new URLSearchParams({
-        full_name: fullName,
-        roll_number: rollNumber,
-        subject_name: subjectName,
-        date: date,
-        status: status
-    });
+    const params = new URLSearchParams();
 
-    const url = `/export_csv?${queryParams.toString()}`;
-    window.location.href = url;  // Triggers download
+    if (name) params.append("full_name", name);
+    if (roll) params.append("roll_number", roll);
+    if (subject) params.append("subject_name", subject);
+    if (date) params.append("date", date);
+    if (status) params.append("status", status);
+
+    const exportUrl = `/export_csv?${params.toString()}`;
+    window.location.href = exportUrl;
 }
 
-// Show the popup message temporarily (3 seconds)
-window.addEventListener('DOMContentLoaded', () => {
-    const popup = document.getElementById('popupMessage');
-    if (popup) {
-        setTimeout(() => {
-            popup.style.display = 'none';
-        }, 1500); // hide after 3 seconds
-    }
-});
-
-
-// Show the No Records Found message for 3 seconds
-window.addEventListener('DOMContentLoaded', () => {
-    const message = document.getElementById('noRecordsMessage');
-    if (message) {
-        setTimeout(() => {
-            message.style.display = 'none'; // Hide the message after 3 seconds
-        }, 1500); // 3 seconds
-    }
-});
 
